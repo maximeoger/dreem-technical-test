@@ -13,8 +13,6 @@ const TABLE_COLUMNS = [
     title: 'Name',
     dataIndex: 'name',
     key: 'name',
-    filterDropDown: () => (<FilterDropDown dataIndex="name"/>),
-    filterIcon: (filtered: string) => (<SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />),
   },
   {
     title: 'Date of Birth',
