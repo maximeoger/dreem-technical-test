@@ -1,4 +1,4 @@
-import { AxiosResponse } from 'axios';
+import { AxiosResponse, AxiosRequestConfig } from 'axios';
 import React, { useEffect, useState } from 'react';
 import axios from 'technical/request';
 
@@ -7,24 +7,25 @@ type IHttpError = {
   message: string;
 }
 
-export default function useRequest(endpoint: string) {
-  const [loading, setLoading] = useState<boolean>(true);
+export default function useRequest(url: string, config?: AxiosRequestConfig ) {
   const [error, setError] = useState<any>(null);
   const [data, setData] = useState<any>(null);
 
+  function getData () {
+    axios.get(url, config)
+    .then(response => {
+      setData(response.data);
+    })
+    .catch(err => setError(err));
+  }
+
   useEffect(() => {
-    async function getData () {
-    
-      await axios.get(endpoint)
-      .then(response => {
-        console.log(response);
-        setData(response);
-        setLoading(false);
-      })
-      .catch(err => setError(err));
-       
-    }
+    getData();
   }, []);
 
-  return {loading, data, error};
+  return {
+    loading: !data,
+    data, 
+    error
+  };
 }
