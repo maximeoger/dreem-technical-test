@@ -2,7 +2,6 @@ import React from 'react';
 import Router from 'business/Router';
 import { Layout } from 'antd';
 import 'antd/dist/antd.css';
-import { PersonProvider } from 'business/Person/state';
 import './index.css';
 
 const { Header, Footer, Content } = Layout;
@@ -12,9 +11,7 @@ function App() {
     <Layout>
       <Header>header</Header>
       <Content>
-        <PersonProvider>
-          <Router/>
-        </PersonProvider>
+        <Router/>
       </Content>
       <Footer>
         <span>Dreem ©2021 - technical test</span>

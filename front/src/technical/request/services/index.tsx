@@ -1,31 +1,18 @@
-import { AxiosResponse, AxiosRequestConfig } from 'axios';
-import React, { useEffect, useState } from 'react';
-import axios from 'technical/request';
+import React from 'react';
+import useSwr from 'swr';
+import axiosInstance from 'technical/request';
 
-type IHttpError = {
-  status: number;
-  message: string;
+const fetcher = (url: string, page?: number, limit?: number) => {
+  return axiosInstance(url, { params: { _page: page, _limit: limit } }).then(response => response);
 }
 
-export default function useRequest(url: string, config?: AxiosRequestConfig ) {
-  const [error, setError] = useState<any>(null);
-  const [data, setData] = useState<any>(null);
-
-  function getData () {
-    axios.get(url, config)
-    .then(response => {
-      setData(response.data);
-    })
-    .catch(err => setError(err));
-  }
-
-  useEffect(() => {
-    getData();
-  }, []);
+export default function useRequest(requestArgs: any) {
+  const { data, error } = useSwr(requestArgs, fetcher);
 
   return {
     loading: !data,
-    data, 
+    data: data?.data || null, 
+    totalCount: data?.headers['x-total-count'] || null,
     error
   };
 }
