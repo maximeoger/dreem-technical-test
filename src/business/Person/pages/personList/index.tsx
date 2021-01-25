@@ -38,7 +38,7 @@ export default function PersonList() {
           render: (text: string, record: any) => {
             return(
               <Space size="middle">
-                <Link to={`${routes.personDetails}/${record.id}`}>See {record.name} details</Link>
+                <Link to={`${routes.personDetails.replace(':id', record.id)}`}>See {record.name} details</Link>
                 <a onClick={() => {
                   mutate('/persons', data.filter((person: any) => person.id !== record.id), false);
                   deletePerson(record.id)
