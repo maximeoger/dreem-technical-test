@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
+import { RouteComponentProps } from 'react-router';
+import { useForm } from 'react-hook-form';
 import { PageHeader, Skeleton, Button, Descriptions } from 'antd';
 import 'antd/dist/antd.css';
 import './index.css';
-import { RouteComponentProps } from 'react-router';
 import { routes } from 'technical/routes/index';
 import useRequest from 'technical/request/services';
 import InputSwitcher from 'components/InputSwitcher';
+import { getPersonDetailsResponseType } from 'business/Person/services/types';
 
 interface MatchParams {
   id: string;
@@ -13,13 +15,19 @@ interface MatchParams {
 
 interface IProps extends RouteComponentProps<MatchParams>{};
 
-const Details = ({ history, location, match } : IProps) => {
+const Details = ({ history, location, match }: IProps) => {
   const [toggleInput, setToggleInput] = useState<boolean>(false);
   const { data, loading } = useRequest(`persons/${match.params.id}`);
+  const { register } = useForm<getPersonDetailsResponseType>({ defaultValues: {
+    name: data?.name || '',
+    dob: data?.dob || '',
+    type: data?.type || '',
+    description: data?.description || '',
+  } });
 
   const handleToggle = () => setToggleInput(!toggleInput);
 
-  const handleChange = (value: any) => {
+  const handleChange = (value: string) => {
     console.log(value);
   }
 
@@ -37,14 +45,14 @@ const Details = ({ history, location, match } : IProps) => {
         onBack={() => history.push(routes.personList)}
         title={`Détails de la personne ${data.name}`}
       />
-      <Descriptions size='default'>
+      <Descriptions size='small'>
         <Descriptions.Item label="Nom">
           <InputSwitcher 
+            value={data.value}
             type="text" 
             toggleInput={toggleInput} 
-            value={data.name}
             name='name'
-            onChange={(e: any) => handleChange(e.target.value)} 
+            onChange={handleChange} 
           />
         </Descriptions.Item>
         <Descriptions.Item label="Date de Naissance">
@@ -54,7 +62,7 @@ const Details = ({ history, location, match } : IProps) => {
             value={data.dob}
             options={['truc', 'machin']}
             name='description'
-            onChange={(e: any) => handleChange(e.target.value)} 
+            onChange={handleChange} 
           />
         </Descriptions.Item>
         <Descriptions.Item label="Type">
@@ -64,7 +72,7 @@ const Details = ({ history, location, match } : IProps) => {
             value={data.type}
             options={['truc', 'machin']}
             name='description'
-            onChange={(e: any) => handleChange(e.target.value)} 
+            onChange={handleChange} 
           />
         </Descriptions.Item>
         <Descriptions.Item>
@@ -74,7 +82,7 @@ const Details = ({ history, location, match } : IProps) => {
               toggleInput={toggleInput} 
               value={data.description}
               name='description'
-              onChange={(e: any) => handleChange(e.target.value)} 
+              onChange={handleChange} 
             />
         </Descriptions.Item>
       </Descriptions>

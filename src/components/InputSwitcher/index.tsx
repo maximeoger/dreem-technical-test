@@ -1,8 +1,10 @@
-import React from 'react';
-import { Input, DatePicker, Select } from 'antd';
-import moment from 'moment';
-
-const { Option } = Select;
+import React, { RefObject } from 'react';
+import { Input } from 'antd';
+import DatePicker from 'components/DatePicker';
+import TextInput from 'components/TextInput';
+import TextArea from 'components/TextArea';
+import Select from 'components/SelectInput';
+import './index.css';
 
 enum InputTypes {
   Select = "select",
@@ -18,26 +20,22 @@ interface IProps {
   rows?: number,
   value: string | Date | any;
   name: string;
-  onChange: (e: any) => void;
+  onChange: (value: string) => void;
 }
 
-const dateFomat = "YYYY/MM/DD";
-
-const normalizeValue = (val: any) => console.log(val, typeof val);
-
-function renderInput({ type, options, value, onChange, ...inputArgs }: Omit<IProps, 'toggleInput'>) {
+function renderInput({ type, ...inputArgs }: Omit<IProps, 'toggleInput'>) {
   switch(type){
     case InputTypes.Text:
-      return (<Input type={InputTypes.Text} onChange={normalizeValue} value={value} {...inputArgs}/>)
+      return (<TextInput {...inputArgs}/>)
 
     case InputTypes.Date:
-      return (<DatePicker defaultValue={moment(value, dateFomat)} onChange={normalizeValue} format={dateFomat}/>)
+      return (<DatePicker {...inputArgs}/>)
 
     case InputTypes.TextArea:
-      return (<Input type={InputTypes.TextArea} value={value} onChange={normalizeValue}  {...inputArgs}/>)
+      return (<TextArea {...inputArgs}/>)
 
     case InputTypes.Select:
-      return (<Select defaultValue={value} onChange={normalizeValue} >{options?.map(option => (<Option value={option}>{option}</Option>))}</Select>)
+      return (<Select {...inputArgs}/>)
     
     default:
       return null
@@ -45,5 +43,5 @@ function renderInput({ type, options, value, onChange, ...inputArgs }: Omit<IPro
 }
 
 export default function InputSwitcher(props: IProps) {
-  return props.toggleInput === true ? renderInput(props) : <p>{props.value}</p>
+  return props.toggleInput === true ? renderInput(props) : <div className={"container"}><p>{props.value}</p></div>
 }
