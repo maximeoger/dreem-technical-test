@@ -8,6 +8,7 @@ import { routes } from 'technical/routes/index';
 import useRequest from 'technical/request/services';
 import InputSwitcher from 'components/InputSwitcher';
 import { getPersonDetailsResponseType } from 'business/Person/services/types';
+import { on } from 'events';
 
 interface MatchParams {
   id: string;
@@ -18,7 +19,7 @@ interface IProps extends RouteComponentProps<MatchParams>{};
 const Details = ({ history, location, match }: IProps) => {
   const [toggleInput, setToggleInput] = useState<boolean>(false);
   const { data, loading } = useRequest(`persons/${match.params.id}`);
-  const { register } = useForm<getPersonDetailsResponseType>({ defaultValues: {
+  const { register, handleSubmit } = useForm<getPersonDetailsResponseType>({ defaultValues: {
     name: data?.name || '',
     dob: data?.dob || '',
     type: data?.type || '',
@@ -27,10 +28,8 @@ const Details = ({ history, location, match }: IProps) => {
 
   const handleToggle = () => setToggleInput(!toggleInput);
 
-  const handleChange = (value: string) => {
-    console.log(value);
-  }
-
+  const onSubmit = handleSubmit((data: getPersonDetailsResponseType) => console.log(data));
+  
   if(loading) return <Skeleton/>
 
   return (
@@ -45,47 +44,53 @@ const Details = ({ history, location, match }: IProps) => {
         onBack={() => history.push(routes.personList)}
         title={`Détails de la personne ${data.name}`}
       />
-      <Descriptions size='small'>
-        <Descriptions.Item label="Nom">
-          <InputSwitcher 
-            value={data.value}
-            type="text" 
-            toggleInput={toggleInput} 
-            name='name'
-            onChange={handleChange} 
-          />
-        </Descriptions.Item>
-        <Descriptions.Item label="Date de Naissance">
-          <InputSwitcher 
-            type="date" 
-            toggleInput={toggleInput} 
-            value={data.dob}
-            options={['truc', 'machin']}
-            name='description'
-            onChange={handleChange} 
-          />
-        </Descriptions.Item>
-        <Descriptions.Item label="Type">
-          <InputSwitcher 
-            type="select" 
-            toggleInput={toggleInput} 
-            value={data.type}
-            options={['truc', 'machin']}
-            name='description'
-            onChange={handleChange} 
-          />
-        </Descriptions.Item>
-        <Descriptions.Item>
-          <InputSwitcher 
-              type="textArea"
-              rows={2}
+      <form onSubmit={onSubmit}>
+        <Descriptions size='small'>
+          <Descriptions.Item label="Nom">
+            <InputSwitcher 
+              value={data.value}
+              ref={register({name: "name"})}
+              type="text" 
               toggleInput={toggleInput} 
-              value={data.description}
+              name='name'
+              //onChange={handleChange} 
+            />
+          </Descriptions.Item>
+          <Descriptions.Item label="Date de Naissance">
+            {/* <InputSwitcher 
+              type="date" 
+              toggleInput={toggleInput} 
+              value={data.dob}
+              options={['truc', 'machin']}
               name='description'
               onChange={handleChange} 
-            />
-        </Descriptions.Item>
-      </Descriptions>
+            /> */}
+          </Descriptions.Item>
+          <Descriptions.Item label="Type">
+            {/* <InputSwitcher 
+              type="select" 
+              toggleInput={toggleInput} 
+              value={data.type}
+              options={['truc', 'machin']}
+              name='description'
+              onChange={handleChange} 
+            /> */}
+          </Descriptions.Item>
+          <Descriptions.Item>
+            {/* <InputSwitcher 
+                type="textArea"
+                rows={2}
+                toggleInput={toggleInput} 
+                value={data.description}
+                name='description'
+                onChange={handleChange} 
+              /> */}
+          </Descriptions.Item>
+          <Descriptions.Item>
+            <Button key="1" type="primary" htmlType="submit">Valider les changements</Button>
+          </Descriptions.Item>
+        </Descriptions>
+      </form>
     </div>
   )
 }

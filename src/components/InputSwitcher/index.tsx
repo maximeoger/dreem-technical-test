@@ -1,4 +1,5 @@
-import React, { RefObject } from 'react';
+import React from 'react';
+import { Ref, RegisterOptions } from 'react-hook-form';
 import { Input } from 'antd';
 import DatePicker from 'components/DatePicker';
 import TextInput from 'components/TextInput';
@@ -18,9 +19,10 @@ interface IProps {
   type: 'select' | 'textArea' | 'date' | 'text';
   options?: string[],
   rows?: number,
+  ref?: any,
   value: string | Date | any;
   name: string;
-  onChange: (value: string) => void;
+  onChange?: (value: string) => void;
 }
 
 function renderInput({ type, ...inputArgs }: Omit<IProps, 'toggleInput'>) {
@@ -28,14 +30,14 @@ function renderInput({ type, ...inputArgs }: Omit<IProps, 'toggleInput'>) {
     case InputTypes.Text:
       return (<TextInput {...inputArgs}/>)
 
-    case InputTypes.Date:
-      return (<DatePicker {...inputArgs}/>)
+    // case InputTypes.Date:
+    //   return (<DatePicker {...inputArgs}/>)
 
-    case InputTypes.TextArea:
-      return (<TextArea {...inputArgs}/>)
+    // case InputTypes.TextArea:
+    //   return (<TextArea {...inputArgs}/>)
 
-    case InputTypes.Select:
-      return (<Select {...inputArgs}/>)
+    // case InputTypes.Select:
+    //   return (<Select {...inputArgs}/>)
     
     default:
       return null
